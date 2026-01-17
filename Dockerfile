@@ -11,9 +11,6 @@ RUN npm ci && npm prune --production
 # Copy application files
 COPY server ./server
 
-# Expose port
-EXPOSE 3000
-
 # Set environment to production
 ENV NODE_ENV=production
 
