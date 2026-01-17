@@ -1,6 +1,11 @@
-import { spawn } from 'child_process';
+import pkg from 'pg';
+const { Pool } = pkg;
+import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -8,36 +13,36 @@ const __dirname = dirname(__filename);
 console.log('🚀 Starting Copywriting Master...\n');
 
 // Run migrations first
-console.log('📊 Running database migrations...');
-const migrate = spawn('node', [join(__dirname, 'migrations', 'migrate.js')], {
-  stdio: 'inherit'
-});
-
-migrate.on('close', (code) => {
-  if (code !== 0) {
-    console.error(`❌ Migration failed with code ${code}`);
-    process.exit(code);
-  }
-
-  console.log('✅ Migrations complete\n');
-  console.log('🌐 Starting API server...');
-
-  // Start the main server
-  const server = spawn('node', [join(__dirname, 'index.js')], {
-    stdio: 'inherit'
+async function runMigrations() {
+  const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
   });
 
-  server.on('close', (code) => {
-    process.exit(code);
-  });
+  try {
+    console.log('📊 Running database migrations...');
 
-  server.on('error', (err) => {
-    console.error('❌ Server error:', err);
+    const sql = readFileSync(join(__dirname, 'migrations', 'init.sql'), 'utf8');
+    await pool.query(sql);
+
+    console.log('✅ Migrations complete\n');
+    await pool.end();
+  } catch (error) {
+    console.error('❌ Migration failed:', error.message);
+    await pool.end();
     process.exit(1);
-  });
-});
+  }
+}
 
-migrate.on('error', (err) => {
-  console.error('❌ Migration error:', err);
+// Run migrations then start server
+runMigrations().then(async () => {
+  console.log('🌐 Starting API server...\n');
+
+  // Import and start the Express app
+  const { default: app } = await import('./index.js');
+
+  console.log('✅ Server initialization complete');
+}).catch((error) => {
+  console.error('❌ Startup failed:', error);
   process.exit(1);
 });
