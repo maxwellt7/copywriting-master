@@ -73,7 +73,8 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 // Start server
-app.listen(PORT, () => {
+// Bind to 0.0.0.0 to accept connections from outside Docker container
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`
 ╔═══════════════════════════════════════════════╗
 ║   Copywriting Master API Server              ║
