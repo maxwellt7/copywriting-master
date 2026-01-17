@@ -14,7 +14,6 @@ export default function ProjectDetail() {
     currentThread,
     messages,
     copyOutputs,
-    currentCopyOutput,
     loading,
     selectProject,
     fetchThreads,
