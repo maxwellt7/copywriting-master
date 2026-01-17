@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "server": "node --watch server/index.js",
     "start": "node server/index.js",
-    "migrate": "node server/migrations/migrate.js"
+    "db:migrate": "node server/migrations/migrate.js"
   },
   "keywords": ["ai", "copywriting", "anthropic", "claude"],
   "author": "",
