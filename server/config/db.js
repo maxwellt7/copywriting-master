@@ -9,14 +9,23 @@ const pool = new Pool({
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
 
-// Test connection
+// Test connection on startup
+pool.query('SELECT NOW()', (err, res) => {
+  if (err) {
+    console.error('❌ Failed to connect to PostgreSQL:', err.message);
+    console.error('DATABASE_URL:', process.env.DATABASE_URL ? 'Set' : 'NOT SET');
+  } else {
+    console.log('✓ Connected to PostgreSQL database');
+  }
+});
+
 pool.on('connect', () => {
-  console.log('✓ Connected to PostgreSQL database');
+  console.log('✓ PostgreSQL client connected');
 });
 
 pool.on('error', (err) => {
-  console.error('Unexpected error on idle client', err);
-  process.exit(-1);
+  console.error('PostgreSQL connection error:', err.message);
+  // Don't exit - let the app continue and retry connections
 });
 
 export default pool;
