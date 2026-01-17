@@ -1,0 +1,510 @@
+{
+  "name": "Copywriting Workflow (Draft 2.0)",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Workflow Overview 🚀\n\nThis workflow automates the copywriting process, starting with a form submission and leveraging a sophisticated AI Copywriting Agent with various specialized tools.\n\n1.  **On Form Submission**: Initiates the workflow upon receiving new form data.\n2.  **AI Copywriting Agent**: Orchestrates the entire copywriting process, utilizing several AI tools to generate, validate, and refine copy.\n3.  **Anthropic Chat Model**: Serves as the underlying language model for all AI agent operations.",
+        "height": 970,
+        "width": 450
+      },
+      "position": [
+        -3120,
+        1472
+      ],
+      "type": "n8n-nodes-base.stickyNote",
+      "name": "Workflow Overview",
+      "id": "f64c8a95-0529-4862-a346-9b1dddb4d430",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## AI Copywriting Tools Breakdown 🛠️\n\nThese specialized AI agent tools work in concert to produce high-quality copy:\n\n*   **Hook Laboratory**: Generates and optimizes compelling hooks.\n*   **Master Copywriting Orchestrator**: Writes the main body of the copy.\n*   **Objection Predictor**: Identifies potential customer objections and suggests handlers.\n*   **Quality Validator**: Scores the copy against predefined quality metrics.\n*   **Revision Engine**: Revises copy if it doesn't meet quality standards.\n*   **A/B Test Generator**: Creates variations for A/B testing.\n*   **Emotion Curve Mapper**: Analyzes the emotional progression of the copy.\n*   **Conversion Predictor**: Estimates conversion rates based on historical data.",
+        "height": 976,
+        "width": 2168,
+        "color": 5
+      },
+      "name": "AI Copywriting Tools Breakdown",
+      "position": [
+        -2640,
+        1472
+      ],
+      "type": "n8n-nodes-base.stickyNote",
+      "id": "274c935d-42ab-4219-96a8-01b937bc07ab",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Final Steps: Quality & Output 📝\n\nAfter the AI Copywriting Agent has completed its work, the workflow proceeds to:\n\n1.  **Quality Check**: An 'If' node that evaluates the generated copy's quality score (`pass_fail`).\n    *   If \"PASS\", the workflow proceeds to create a document.\n    *   If \"FAIL\", the workflow loops back to the 'AI Copywriting Agent' for revision.\n2.  **Create a document**: Creates a new Google Doc with the final approved copy.",
+        "height": 972,
+        "width": 628,
+        "color": 4
+      },
+      "name": "Final Steps: Quality & Output",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -448,
+        1472
+      ],
+      "id": "8c2695ec-2d65-43da-a9eb-ad3585876519",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Action Required: Folder ID ❗\n\nThe 'Create a document' node requires a **'Folder Name or ID'** to know where to save the generated Google Doc. \n\n**To fix this:**\n1.  **Double-click** the 'Create a document' node.\n2.  Locate the **'Folder Name or ID'** parameter.\n3.  Enter the name or ID of the Google Drive folder where you want to save the documents.",
+        "height": 424,
+        "width": 400,
+        "color": 3
+      },
+      "position": [
+        -240,
+        2000
+      ],
+      "type": "n8n-nodes-base.stickyNote",
+      "name": "Folder ID Required",
+      "id": "ea23bb74-f828-4cb6-bb4b-5875f2a5bc6a",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-sonnet-4-20250514",
+          "mode": "list",
+          "cachedResultName": "Claude Sonnet 4"
+        },
+        "options": {
+          "temperature": 0.5
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        -1872,
+        2272
+      ],
+      "id": "98de5920-cbba-43ed-a66d-d7110c0f13a0",
+      "name": "Anthropic Chat Model1",
+      "credentials": {
+        "anthropicApi": {
+          "id": "r5vg69CQOrGUEhqk",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "title": "={{$json['Title']}} - Copy by Max"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        -128,
+        1824
+      ],
+      "id": "69d5951d-7476-4a60-a2a9-761026ca392f",
+      "name": "Create a document1",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "0hwbCbOKnn6xv5HM",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "formTitle": "Max Mayes Copywriting v2.0",
+        "formDescription": "Fill out this form to kick off the copywriting process.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Title"
+            },
+            {
+              "fieldLabel": "What's this copy piece about?"
+            },
+            {
+              "fieldLabel": "Type of Copy",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Landing Page"
+                  },
+                  {
+                    "option": "VSL"
+                  },
+                  {
+                    "option": "Ad Script"
+                  },
+                  {
+                    "option": "Ad Copy"
+                  },
+                  {
+                    "option": "Email"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Offer Information"
+            },
+            {
+              "fieldLabel": "Avatar Information"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "31d49248-2876-4635-924c-60bdb3ad825c",
+      "name": "On Form Submission1",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -2816,
+        1824
+      ],
+      "webhookId": "95cd3923-0109-449a-8fa7-0f9ddb2f7549"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Hook Generator and Optimizer",
+        "text": "={{$json['What\\'s this copy piece about?']}}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "Generate 5 different hooks for this copy using Max's style:\n\n## HOOK FORMULAS TO USE:\n1. Shocking Confession: 'I just [unexpected action/failure]...'\n2. Pattern Interrupt: 'Fuck. [Realization]...'\n3. Specific Deadline: 'At 3:47 AM tomorrow...'\n4. Contrarian Statement: 'Everything you know about [topic] is wrong...'\n5. Insider Secret: 'They don't want you to know this...'\n\n## REQUIREMENTS:\n- First 125 characters must stop the scroll\n- Use specific numbers/timestamps\n- Create curiosity gap\n- Include emotional trigger\n\n## OUTPUT FORMAT:\n{\n  \"hooks\": [\n    {\"type\": \"shocking_confession\", \"text\": \"...\", \"score\": 0-10},\n    {\"type\": \"pattern_interrupt\", \"text\": \"...\", \"score\": 0-10},\n    {\"type\": \"specific_deadline\", \"text\": \"...\", \"score\": 0-10},\n    {\"type\": \"contrarian\", \"text\": \"...\", \"score\": 0-10},\n    {\"type\": \"insider_secret\", \"text\": \"...\", \"score\": 0-10}\n  ],\n  \"winner\": \"[highest scoring hook]\",\n  \"reasoning\": \"[why this hook wins]\"\n}"
+        }
+      },
+      "id": "d8f68cab-66b8-4420-9d8e-27f57138eaf0",
+      "name": "Hook Laboratory1",
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 2.2,
+      "position": [
+        -2592,
+        2064
+      ]
+    },
+    {
+      "parameters": {
+        "toolDescription": "Generate A/B test variations",
+        "text": "={{$('Master Copywriting Orchestrator').item.json.output}}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "## A/B TEST GENERATION\n\nCreate 2 variations of the main copy:\n\n### VARIATION A: Different Hook\n- Keep 95% of body same\n- Change hook completely\n- Use different psychological trigger\n- Test curiosity vs. fear\n\n### VARIATION B: Different Close\n- Keep 95% of body same\n- Change closing section\n- Test different urgency trigger\n- Test different CTA language\n\n## OUTPUT FORMAT:\n{\n  \"original\": {\n    \"hook\": \"[first 150 chars]\",\n    \"close\": \"[last 150 chars]\"\n  },\n  \"variation_a\": {\n    \"hook\": \"[new hook]\",\n    \"psychological_trigger\": \"[trigger used]\",\n    \"hypothesis\": \"[what we're testing]\"\n  },\n  \"variation_b\": {\n    \"close\": \"[new close]\",\n    \"urgency_type\": \"[scarcity/deadline/loss]\",\n    \"hypothesis\": \"[what we're testing]\"\n  },\n  \"test_duration\": \"72 hours\",\n  \"success_metric\": \"conversion_rate\"\n}"
+        }
+      },
+      "id": "de06eef6-e179-4171-868b-7c7e5323bb88",
+      "name": "A/B Test Generator1",
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 2.2,
+      "position": [
+        -1376,
+        2064
+      ]
+    },
+    {
+      "parameters": {
+        "toolDescription": "Map emotional journey through copy",
+        "text": "={{$('Master Copywriting Orchestrator').item.json.output}}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "## EMOTIONAL JOURNEY MAPPING\n\nAnalyze the emotional progression:\n\n## IDEAL CURVE:\n1. PAIN (0-10% of copy)\n2. AGITATION (10-25%)\n3. HOPE (25-40%)\n4. EXCITEMENT (40-70%)\n5. URGENCY (70-85%)\n6. ACTION (85-100%)\n\n## ANALYSIS:\nBreak copy into 10 sections.\nRate emotional intensity (1-10) for each.\nIdentify the dominant emotion.\n\n## OUTPUT FORMAT:\n{\n  \"sections\": [\n    {\n      \"position\": \"0-10%\",\n      \"emotion\": \"pain\",\n      \"intensity\": 8,\n      \"key_phrase\": \"...\"\n    }\n  ],\n  \"curve_match\": \"85%\",\n  \"weak_points\": [\"sections needing adjustment\"],\n  \"recommendations\": [\"specific fixes\"]\n}"
+        }
+      },
+      "id": "2125659a-7d08-4898-80d1-7bf38580f212",
+      "name": "Emotion Curve Mapper1",
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 2.2,
+      "position": [
+        -1088,
+        2064
+      ]
+    },
+    {
+      "parameters": {
+        "toolDescription": "Predict conversion rate based on historical data",
+        "text": "={{$('Master Copywriting Orchestrator').item.json.output}}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "## CONVERSION PREDICTION MODEL\n\nSearch Pinecone for similar copy with performance data.\n\n## FACTORS TO ANALYZE:\n1. Hook strength (0-10)\n2. Offer clarity (0-10)\n3. Urgency type (deadline/scarcity/loss)\n4. Social proof density (mentions per 500 words)\n5. Price justification strength (0-10)\n6. CTA frequency (per 500 words)\n7. Objection handling (addressed/not)\n8. Identity transformation clarity (0-10)\n\n## COMPARISON:\nFind 5 most similar pieces in Pinecone.\nAverage their conversion rates.\nAdjust based on factor differences.\n\n## OUTPUT FORMAT:\n{\n  \"similar_copies\": [\n    {\"title\": \"...\", \"conversion\": \"X%\", \"similarity\": \"Y%\"}\n  ],\n  \"predicted_conversion\": \"X.X%\",\n  \"confidence\": \"high/medium/low\",\n  \"improvement_opportunities\": [\n    {\"factor\": \"...\", \"current\": X, \"target\": Y, \"impact\": \"+Z%\"}\n  ],\n  \"expected_revenue\": \"$X at Y traffic\"\n}"
+        }
+      },
+      "id": "d1beb997-2864-46ff-b105-fc2ea907b3b9",
+      "name": "Conversion Predictor1",
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 2.2,
+      "position": [
+        -800,
+        2064
+      ]
+    },
+    {
+      "parameters": {
+        "toolDescription": "Voice Match Validator and Scorer",
+        "text": "={{$('Master Copywriting Orchestrator').item.json.output}}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "## VOICE VALIDATION CHECKLIST\n\nScore this copy against Max's voice (1-10 each):\n\n### LANGUAGE (Weight: 30%)\n□ Specific numbers used ($47,293 not 'thousands')\n□ Timestamps included (3:47 AM not 'early')\n□ Strategic profanity (emphasis only)\n□ No corporate jargon\nScore: _/10\n\n### STRUCTURE (Weight: 30%)\n□ Started with vulnerability/failure\n□ Pattern interrupts every 3-4 paragraphs\n□ Binary choices present\n□ Rhythm pattern (short-short-long)\nScore: _/10\n\n### PSYCHOLOGY (Weight: 40%)\n□ Identity transformation focus\n□ Loss frame used\n□ Tribal belonging created\n□ Future history painted\nScore: _/10\n\n## OUTPUT FORMAT:\n{\n  \"language_score\": 0-10,\n  \"structure_score\": 0-10,\n  \"psychology_score\": 0-10,\n  \"weighted_total\": 0-10,\n  \"pass_fail\": \"PASS/FAIL (8+ to pass)\",\n  \"specific_issues\": [\"list issues to fix\"],\n  \"revision_instructions\": \"specific changes needed\"\n}\n\n## REVISION TRIGGER:\nIf weighted_total < 8, output revision_instructions for immediate rewrite."
+        }
+      },
+      "id": "e64a9087-7b5a-4c0b-8e3e-ab8c90d2d040",
+      "name": "Quality Validator",
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 2.2,
+      "position": [
+        -2240,
+        2064
+      ]
+    },
+    {
+      "parameters": {
+        "toolDescription": "Copy Revision Specialist",
+        "text": "={{$json.revision_instructions}}",
+        "options": {
+          "systemMessage": "## REVISION PROTOCOL\n\nOriginal Copy: {{$('Master Copywriting Orchestrator').item.json.output}}\n\nValidation Score: {{$json.weighted_total}}\n\nIssues to Fix: {{$json.specific_issues}}\n\n## REVISION REQUIREMENTS:\n1. Keep what's working (anything scored 8+)\n2. Fix specific issues identified\n3. Maintain copy length within 10%\n4. Strengthen psychological triggers\n5. Add more specific numbers/timestamps\n\n## MAX'S 5-PASS EDIT:\n1. Cut corporate bullshit\n2. Add specific numbers\n3. Insert pattern breaks\n4. Strengthen CTAs\n5. Read aloud test\n\n## OUTPUT:\nRevised copy with ALL issues addressed.\n\n## QUALITY GATE:\nDo NOT output unless you're confident this would score 8+."
+        }
+      },
+      "id": "bef7a968-2810-4d50-ba35-ea6fe527c643",
+      "name": "Revision Engine",
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 2.2,
+      "position": [
+        -1664,
+        2064
+      ]
+    },
+    {
+      "parameters": {
+        "toolDescription": "Predict and handle objections",
+        "text": "Avatar: {{$json['Avatar Information']}}\nOffer: {{$json['Offer Information']}}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "## OBJECTION PREDICTION ENGINE\n\nBased on avatar and offer, predict top 5 objections:\n\n## STANDARD OBJECTIONS TO CHECK:\n1. Price (\"I can't afford it\")\n2. Time (\"I don't have time\")\n3. Skepticism (\"How do I know this works?\")\n4. Authority (\"I need to ask my spouse\")\n5. Timing (\"I'm not ready yet\")\n\n## AVATAR-SPECIFIC OBJECTIONS:\nAnalyze avatar document for:\n- Past failures mentioned\n- Current pain points\n- Resource constraints\n- Belief limitations\n\n## OUTPUT FORMAT:\n{\n  \"predicted_objections\": [\n    {\n      \"objection\": \"...\",\n      \"likelihood\": \"high/medium/low\",\n      \"handler\": \"[specific counter-argument]\",\n      \"where_to_address\": \"[section of copy]\"\n    }\n  ],\n  \"must_handle\": [\"top 3 objections\"],\n  \"pre_handle_script\": \"[paragraph addressing all 3]\"\n}"
+        }
+      },
+      "id": "b1bb030c-a483-46b1-9220-2ce4f402a1f8",
+      "name": "Objection Predictor",
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 2.2,
+      "position": [
+        -1952,
+        2064
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{$json}}",
+        "options": {
+          "systemMessage": "You are Max's AI Copywriting Agent. Use the available tools to create high-converting copy.\n\n## WORKFLOW:\n1. Use 'Objection Predictor1' to analyze avatar/offer and predict objections\n2. Use 'Hook Laboratory' to generate 5 winning hooks\n3. Use 'Master Copywriting Orchestrator' to write the main copy\n4. Use 'Quality Validator1' to score the copy (must score 8+)\n5. If score < 8, use 'Revision Engine1' to fix issues and re-validate\n6. Use 'A/B Test Generator' to create test variations\n7. Use 'Emotion Curve Mapper' and 'Conversion Predictor' for analytics\n\n## OUTPUT FORMAT:\nReturn a JSON object with:\n- title: Copy title\n- winner_hook: Best performing hook\n- copy: Full copywriting piece\n- validation_score: Quality score\n- pass_fail: PASS or FAIL\n- ab_variations: A/B test versions\n- predicted_conversion: Expected conversion rate"
+        }
+      },
+      "name": "AI Copywriting Agent1",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        -1936,
+        1824
+      ],
+      "id": "26bf6fa7-6426-4f50-bb9c-28bd63ebcff6"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.pass_fail}}",
+              "operation": "equals",
+              "value2": "PASS"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Quality Check1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        1840
+      ],
+      "id": "b05227c4-5d47-4476-a0ee-9043471ec983"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Anthropic Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Copywriting Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Hook Laboratory1",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Quality Validator",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Objection Predictor",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Revision Engine",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "A/B Test Generator1",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Emotion Curve Mapper1",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Conversion Predictor1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On Form Submission1": {
+      "main": [
+        [
+          {
+            "node": "AI Copywriting Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hook Laboratory1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Copywriting Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "A/B Test Generator1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Copywriting Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Emotion Curve Mapper1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Copywriting Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Conversion Predictor1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Copywriting Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Quality Validator": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Copywriting Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Revision Engine": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Copywriting Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Objection Predictor": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Copywriting Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Copywriting Agent1": {
+      "main": [
+        [
+          {
+            "node": "Quality Check1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Quality Check1": {
+      "main": [
+        [
+          {
+            "node": "Create a document1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Copywriting Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "958eb4a5-9f86-439b-97d1-1cb62821b391",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b4dab6bc82354797802e6d1ee2c1fe486aa8455b89929a584692526a2b575109"
+  },
+  "id": "oVPBLP23BHNrSMcD",
+  "tags": []
+}
