@@ -14,5 +14,5 @@ COPY server ./server
 # Set environment to production
 ENV NODE_ENV=production
 
-# Start the application
-CMD ["node", "server/index.js"]
+# Start the application (runs migrations then starts server)
+CMD ["node", "server/start.js"]

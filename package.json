@@ -9,7 +9,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "server": "node --watch server/index.js",
-    "start": "node server/index.js",
+    "start": "node server/start.js",
+    "migrate": "echo 'Migrations run automatically on start'",
     "db:migrate": "node server/migrations/migrate.js"
   },
   "keywords": ["ai", "copywriting", "anthropic", "claude"],
