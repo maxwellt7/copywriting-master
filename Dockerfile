@@ -5,8 +5,8 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --production
+# Install all dependencies first, then prune devDependencies
+RUN npm ci && npm prune --production
 
 # Copy application files
 COPY server ./server
