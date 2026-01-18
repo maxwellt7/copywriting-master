@@ -16,34 +16,51 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// CORS Configuration
+// CORS Configuration - Allow Vercel frontend and development
 const corsOptions = {
-  origin: function (origin, callback) {
+  origin: (origin, callback) => {
+    // Log the origin for debugging
+    console.log('🔍 CORS request from origin:', origin);
+
     const allowedOrigins = [
       'http://localhost:5173',
+      'http://localhost:3000',
       'https://copywriting-master-vb5u.vercel.app',
       process.env.FRONTEND_URL
-    ].filter(Boolean);
+    ];
 
-    // Allow requests with no origin (mobile apps, Postman, etc.)
-    if (!origin) return callback(null, true);
+    // Remove null/undefined values
+    const validOrigins = allowedOrigins.filter(o => o && o.trim());
 
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
+    // Allow requests with no origin (server-to-server, mobile apps)
+    if (!origin) {
+      console.log('✅ CORS: Allowing request with no origin');
+      return callback(null, true);
     }
+
+    // Check if origin is in whitelist
+    if (validOrigins.includes(origin)) {
+      console.log(`✅ CORS: Allowing whitelisted origin: ${origin}`);
+      return callback(null, true);
+    }
+
+    // Log rejected origins for debugging
+    console.log(`❌ CORS: Rejecting origin: ${origin}`);
+    console.log('   Allowed origins:', validOrigins);
+    return callback(null, false);
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
   exposedHeaders: ['Content-Range', 'X-Content-Range'],
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 204,
+  preflightContinue: false
 };
 
 // Middleware
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // Enable preflight for all routes
+// Explicitly handle OPTIONS for all routes
+app.options('*', cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
