@@ -16,6 +16,40 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Manual CORS headers middleware - runs FIRST before everything else
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  console.log(`📥 Incoming ${req.method} request to ${req.path} from origin: ${origin}`);
+
+  // Always set CORS headers for allowed origins
+  const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'https://copywriting-master-vb5u.vercel.app',
+    process.env.FRONTEND_URL
+  ].filter(Boolean);
+
+  if (!origin || allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin || '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Max-Age', '86400'); // 24 hours
+
+    console.log(`✅ CORS headers set for origin: ${origin || 'none'}`);
+  } else {
+    console.log(`❌ Origin not allowed: ${origin}`);
+  }
+
+  // Handle preflight OPTIONS requests immediately
+  if (req.method === 'OPTIONS') {
+    console.log('✅ Responding to OPTIONS preflight request');
+    return res.status(204).end();
+  }
+
+  next();
+});
+
 // CORS Configuration - Allow Vercel frontend and development
 const corsOptions = {
   origin: (origin, callback) => {
