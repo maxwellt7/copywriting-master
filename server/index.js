@@ -16,35 +16,28 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Manual CORS headers middleware - runs FIRST before everything else
+// ULTRA-AGGRESSIVE CORS - Allow ALL origins for debugging
 app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  console.log(`📥 Incoming ${req.method} request to ${req.path} from origin: ${origin}`);
+  const origin = req.headers.origin || req.headers.referer || 'unknown';
 
-  // Always set CORS headers for allowed origins
-  const allowedOrigins = [
-    'http://localhost:5173',
-    'http://localhost:3000',
-    'https://copywriting-master-vb5u.vercel.app',
-    process.env.FRONTEND_URL
-  ].filter(Boolean);
+  console.log(`🌐 ${req.method} ${req.url}`);
+  console.log(`   Origin: ${origin}`);
+  console.log(`   Headers:`, Object.keys(req.headers).join(', '));
 
-  if (!origin || allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin || '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Max-Age', '86400'); // 24 hours
+  // Set CORS headers for EVERY request
+  res.setHeader('Access-Control-Allow-Origin', origin === 'unknown' ? '*' : origin);
+  res.setHeader('Access-Control-Allow-Methods', '*');
+  res.setHeader('Access-Control-Allow-Headers', '*');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Max-Age', '86400');
+  res.setHeader('Access-Control-Expose-Headers', '*');
 
-    console.log(`✅ CORS headers set for origin: ${origin || 'none'}`);
-  } else {
-    console.log(`❌ Origin not allowed: ${origin}`);
-  }
+  console.log(`✅ CORS headers set`);
 
-  // Handle preflight OPTIONS requests immediately
+  // Handle OPTIONS immediately
   if (req.method === 'OPTIONS') {
-    console.log('✅ Responding to OPTIONS preflight request');
-    return res.status(204).end();
+    console.log(`✅ OPTIONS request - responding with 200 OK`);
+    return res.status(200).end();
   }
 
   next();
