@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CORS Test</title>
+</head>
+<body>
+    <h1>Railway Backend CORS Test</h1>
+    <button onclick="testGet()">Test GET Request</button>
+    <button onclick="testPost()">Test POST Request</button>
+    <button onclick="testOptions()">Test OPTIONS Request</button>
+    <button onclick="testRegister()">Test Register Endpoint</button>
+    <pre id="output"></pre>
+
+    <script>
+        const API_URL = 'https://copywriting-master-production.up.railway.app';
+        const log = (msg) => {
+            document.getElementById('output').textContent += msg + '\n';
+            console.log(msg);
+        };
+
+        async function testGet() {
+            log('\n=== Testing GET to /test-cors ===');
+            try {
+                const response = await fetch(`${API_URL}/test-cors`);
+                const data = await response.json();
+                log('✅ SUCCESS:');
+                log(JSON.stringify(data, null, 2));
+            } catch (error) {
+                log('❌ ERROR: ' + error.message);
+            }
+        }
+
+        async function testPost() {
+            log('\n=== Testing POST to /test-cors ===');
+            try {
+                const response = await fetch(`${API_URL}/test-cors`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ test: 'data' })
+                });
+                const data = await response.json();
+                log('✅ SUCCESS:');
+                log(JSON.stringify(data, null, 2));
+            } catch (error) {
+                log('❌ ERROR: ' + error.message);
+            }
+        }
+
+        async function testOptions() {
+            log('\n=== Testing OPTIONS to /test-cors ===');
+            try {
+                const response = await fetch(`${API_URL}/test-cors`, {
+                    method: 'OPTIONS'
+                });
+                log('✅ OPTIONS Response Status: ' + response.status);
+                log('Headers: ' + JSON.stringify([...response.headers], null, 2));
+            } catch (error) {
+                log('❌ ERROR: ' + error.message);
+            }
+        }
+
+        async function testRegister() {
+            log('\n=== Testing POST to /api/auth/register ===');
+            try {
+                const response = await fetch(`${API_URL}/api/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: `test${Date.now()}@example.com`,
+                        password: 'TestPassword123!'
+                    })
+                });
+                const data = await response.json();
+                log('✅ SUCCESS:');
+                log(JSON.stringify(data, null, 2));
+            } catch (error) {
+                log('❌ ERROR: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
