@@ -100,6 +100,17 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Test CORS endpoint - responds to ANY method
+app.all('/test-cors', (req, res) => {
+  console.log(`✅ /test-cors endpoint hit with ${req.method}`);
+  res.json({
+    method: req.method,
+    headers: req.headers,
+    origin: req.headers.origin,
+    message: 'CORS test successful!'
+  });
+});
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
