@@ -1,7 +1,9 @@
 import axios from 'axios';
 import type { User, Project, Document, Thread, Message, CopyType, CopyOutput, Metric } from '../types';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+// Ensure API_URL has protocol
+const rawApiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const API_URL = rawApiUrl.startsWith('http') ? rawApiUrl : `https://${rawApiUrl}`;
 
 const api = axios.create({
   baseURL: `${API_URL}/api`,
