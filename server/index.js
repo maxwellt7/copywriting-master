@@ -53,6 +53,7 @@ const corsOptions = {
       'http://localhost:5173',
       'http://localhost:3000',
       'https://copywriting-master-vb5u.vercel.app',
+      'https://copywriting-master.vercel.app',
       process.env.FRONTEND_URL
     ];
 

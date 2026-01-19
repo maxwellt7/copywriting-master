@@ -20,16 +20,28 @@ export async function generateEmbedding(text) {
 
 /**
  * Generate embeddings for multiple texts in batch
+ * Cohere has a limit of 96 texts per batch, so we batch them
  */
 export async function generateEmbeddings(texts) {
   try {
-    const response = await cohere.embed({
-      texts: texts,
-      model: 'embed-english-v3.0',
-      inputType: 'search_document'
-    });
+    const BATCH_SIZE = 96; // Cohere's maximum batch size
+    const allEmbeddings = [];
 
-    return response.embeddings;
+    // Process in batches of 96
+    for (let i = 0; i < texts.length; i += BATCH_SIZE) {
+      const batch = texts.slice(i, i + BATCH_SIZE);
+      console.log(`Generating embeddings for batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(texts.length / BATCH_SIZE)} (${batch.length} texts)`);
+
+      const response = await cohere.embed({
+        texts: batch,
+        model: 'embed-english-v3.0',
+        inputType: 'search_document'
+      });
+
+      allEmbeddings.push(...response.embeddings);
+    }
+
+    return allEmbeddings;
   } catch (error) {
     console.error('Batch embedding generation error:', error);
     throw error;
