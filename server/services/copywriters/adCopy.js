@@ -25,9 +25,28 @@ export async function generateAdCopy(brief, context, previousFeedback = null) {
     try {
       result = JSON.parse(response);
     } catch (parseError) {
+      console.log('Direct JSON parse failed, attempting extraction...');
       const jsonMatch = response.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
-        result = JSON.parse(jsonMatch[0]);
+        try {
+          result = JSON.parse(jsonMatch[0]);
+          console.log('✓ Extracted JSON successfully');
+        } catch (extractError) {
+          console.log('Extracted JSON is malformed, using fallback');
+          result = {
+            variations: [
+              {
+                headline: 'Generated Ad',
+                body: response,
+                cta: 'Learn More'
+              }
+            ],
+            metadata: {
+              platform: 'general',
+              character_counts: { headline: 0, body: response.length }
+            }
+          };
+        }
       } else {
         result = {
           variations: [

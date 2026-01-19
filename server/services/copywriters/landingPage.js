@@ -25,9 +25,30 @@ export async function generateLandingPage(brief, context, previousFeedback = nul
     try {
       result = JSON.parse(response);
     } catch (parseError) {
+      console.log('Direct JSON parse failed, attempting extraction...');
       const jsonMatch = response.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
-        result = JSON.parse(jsonMatch[0]);
+        try {
+          result = JSON.parse(jsonMatch[0]);
+          console.log('✓ Extracted JSON successfully');
+        } catch (extractError) {
+          console.log('Extracted JSON is malformed, using fallback');
+          result = {
+            sections: {
+              hero: { headline: 'Transform Your Business', subheadline: '', cta: 'Get Started' },
+              problem: response.substring(0, 500),
+              solution: response.substring(500, 1000),
+              proof: '',
+              offer: '',
+              guarantee: '',
+              final_cta: 'Get Started Now'
+            },
+            metadata: {
+              word_count: response.split(/\s+/).length,
+              sections_count: 7
+            }
+          };
+        }
       } else {
         result = {
           sections: {

@@ -25,10 +25,26 @@ export async function generateAdScript(brief, context, previousFeedback = null) 
     try {
       result = JSON.parse(response);
     } catch (parseError) {
+      console.log('Direct JSON parse failed, attempting extraction...');
       // Try to extract JSON from response
       const jsonMatch = response.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
-        result = JSON.parse(jsonMatch[0]);
+        try {
+          result = JSON.parse(jsonMatch[0]);
+          console.log('✓ Extracted JSON successfully');
+        } catch (extractError) {
+          console.log('Extracted JSON is malformed, using fallback');
+          // Fallback: return raw response
+          result = {
+            script: response,
+            metadata: {
+              word_count: response.split(/\s+/).length,
+              estimated_runtime: 'Unknown',
+              hooks_used: [],
+              triggers_leveraged: []
+            }
+          };
+        }
       } else {
         // Fallback: return raw response
         result = {

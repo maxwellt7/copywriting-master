@@ -25,9 +25,25 @@ export async function generateEmail(brief, context, previousFeedback = null) {
     try {
       result = JSON.parse(response);
     } catch (parseError) {
+      console.log('Direct JSON parse failed, attempting extraction...');
       const jsonMatch = response.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
-        result = JSON.parse(jsonMatch[0]);
+        try {
+          result = JSON.parse(jsonMatch[0]);
+          console.log('✓ Extracted JSON successfully');
+        } catch (extractError) {
+          console.log('Extracted JSON is malformed, using fallback');
+          result = {
+            subject_line: 'Important Update',
+            preview_text: '',
+            body: response,
+            cta: 'Click Here',
+            metadata: {
+              email_type: 'general',
+              word_count: response.split(/\s+/).length
+            }
+          };
+        }
       } else {
         result = {
           subject_line: 'Important Update',
